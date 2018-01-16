@@ -1,11 +1,10 @@
+
 const _ = require('lodash');
 
 var data = [{name : 'Holly White', content : 'Can you read this? #wearesleep'}];
-var count = 0;
 
-function add (name, content) {
-  count++
-  data.push({ name: name, content: content, id: count});
+function add (name, text) {
+  data.push({ name: name, text: text, id: data.length});
 
 }
 

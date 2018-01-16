@@ -1,3 +1,4 @@
+'use strict'
 const express = require('express');
 const app = express();
 const chalk = require('chalk');
@@ -69,10 +70,5 @@ var locals = {
 
 
 nunjucks.configure('views', {noCache: true});
-
-nunjucks.render('index.html', locals, function (err, output) {
-    if (err) throw err;
-    console.log(output);
-});
 
 app.listen(3000, () => console.log('server listening'));
