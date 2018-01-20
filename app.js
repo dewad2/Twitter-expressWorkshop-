@@ -1,30 +1,48 @@
-'use strict'
-const express = require('express');
-const app = express();
-const chalk = require('chalk');
-const morgan = require('morgan');
-const nodemon = require('nodemon');
-const nunjucks = require('nunjucks');
-const routes = require('./routes');
+'use strict';
+var express = require('express');
+var app = express();
+var morgan = require('morgan');
+var nunjucks = require('nunjucks');
+var makesRouter = require('./routes');
 var fs = require('fs');
 var path = require('path');
 var mime = require('mime');
+var bodyParser = require('body-parser');
+var socketio = require('socket.io');
 
-app.use('/', routes);
+// templating boilerplate setup
+app.engine('html', nunjucks.render); // how to render html templates
+app.set('view engine', 'html'); // what file extension do our templates have
+nunjucks.configure('views', { noCache: true }); // where to find the views, caching off
 
-app.get('/', function(req, res) {
-  res.send('you got the root route');
+// logging middleware
+app.use(morgan('dev'));
+
+// body parsing middleware
+app.use(bodyParser.urlencoded({ extended: true })); // for HTML form submits
+app.use(bodyParser.json()); // would be for AJAX requests
+
+// start the server
+var server = app.listen(1337, function(){
+  console.log('listening on port 1337');
 });
+var io = socketio.listen(server);
 
-app.use(morgan(function (tokens, req, res) {
-  return [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms'
-  ].join(' ')
-}))
+app.use(express.static(path.join(__dirname, '/public')));
+
+// modular routing that uses io inside it
+app.use('/', makesRouter(io));
+
+// // manually-written static file middleware
+// app.use(function(req, res, next){
+//   var mimeType = mime.lookup(req.path);
+//   fs.readFile('./public' + req.path, function(err, fileBuffer){
+//     if (err) return next();
+//     res.header('Content-Type', mimeType);
+//     res.send(fileBuffer);
+//   });
+// });
+
 
 //*** maually written static middleware
 // app.use(function(req, res, next){
@@ -36,10 +54,5 @@ app.use(morgan(function (tokens, req, res) {
 //   })
 // })
 
-app.engine('html', nunjucks.render);
-app.set('view engine', 'html');
 
-nunjucks.configure('/views');
-nunjucks.configure('views', { noCache: true });
-
-app.listen(3000, () => console.log('server is listening!'));
+//nunjucks.configure('/views');
