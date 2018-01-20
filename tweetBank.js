@@ -1,11 +1,10 @@
+'use strict';
 
 const _ = require('lodash');
-
-var data = [{name : 'Holly White', content : 'Can you read this? #wearesleep'}];
+var data = [];
 
 function add (name, text) {
-  data.push({ name: name, text: text, id: data.length});
-
+ data.push({ name: name, text: text, id: data.length}); //keeps cout of the tweets(data.length)
 }
 
 function list () {
@@ -16,11 +15,7 @@ function find (properties) {
   return _.cloneDeep(_.filter(data, properties));
 }
 
-
 module.exports = { add: add, list: list, find: find };
-
-
-
 
 const randArrayEl = function(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -40,3 +35,5 @@ const getFakeTweet = function() {
 for (let i = 0; i < 10; i++) {
   module.exports.add( getFakeName(), getFakeTweet() );
 }
+
+

@@ -3,21 +3,18 @@ const express = require('express');
 const app = express();
 const chalk = require('chalk');
 const morgan = require('morgan');
+const nodemon = require('nodemon');
 const nunjucks = require('nunjucks');
 const routes = require('./routes');
-
-// app.use((req,res,next) => {
-// //   console.log('Request Type: ', req.method);
-// //   next();
-// // },
-// //   (req,res,next) => {
-// //   console.log('Request URL:', req.originalUrl);
-// //   next();
-// });
+var fs = require('fs');
+var path = require('path');
+var mime = require('mime');
 
 app.use('/', routes);
 
-
+app.get('/', function(req, res) {
+  res.send('you got the root route');
+});
 
 app.use(morgan(function (tokens, req, res) {
   return [
@@ -29,46 +26,20 @@ app.use(morgan(function (tokens, req, res) {
   ].join(' ')
 }))
 
-// router.get('/news', (req,res) => {
-//   res.write('This is not Fox news.');
-//   res.end();
+//*** maually written static middleware
+// app.use(function(req, res, next){
+//   var mimeType = mime.lookup(req.path);
+//   fs.readFile('./public' + req.path, function(err, fileBuffer) {
+//     if (err) return next();
+//     res.header('Content-Type', mimeType);
+//     res.send(fileBuffer);
+//   })
 // })
 
-
-// app.get('/', (req,res) => {
-//   const people = [{name: 'Full'}, {name: 'Stacker'}, {name: 'Son'}];
-//   res.render('./index', {title: 'Hall of Fame', people: people}, function(err, html) {
-//   if(err) throw err;
-//   res.send(html);
-// });
-
-  // res.write('It\'s just the beginning...')
-
-  // res.end();
-  // });
-
-
-
-
 app.engine('html', nunjucks.render);
-
 app.set('view engine', 'html');
 
 nunjucks.configure('/views');
+nunjucks.configure('views', { noCache: true });
 
-var locals = {
-    title: 'An Example',
-    people: [
-        { name: 'Gandalf'},
-        { name: 'Frodo' },
-        { name: 'Hermione'}
-    ]
-};
-
-
-
-
-
-nunjucks.configure('views', {noCache: true});
-
-app.listen(3000, () => console.log('server listening'));
+app.listen(3000, () => console.log('server is listening!'));

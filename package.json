@@ -12,7 +12,9 @@
   "dependencies": {
     "express": "^4.16.2",
     "lodash": "^4.17.4",
+    "mime": "^2.2.0",
     "morgan": "^1.9.0",
+    "nodemon": "^1.14.11",
     "nunjucks": "^3.0.1"
   }
 }

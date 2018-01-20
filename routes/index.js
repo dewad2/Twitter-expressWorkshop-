@@ -4,17 +4,16 @@ const router = express.Router();
 const tweetBank = require('../tweetBank');
 
 router.get('/', function (req, res, next) {
-  let allTheTweets = tweetBank.list();
-  res.render('index', { tweets: allTheTweets } );
+  let tweets = tweetBank.list();
+  res.render('index', { tweets: tweets } );
 });
 
 
 router.use(express.static('public'));
 
-router.get('/users/:name/', function(req, res, next) {
+router.get('/users/:name', function(req, res, next) {
   var tweetsForName = tweetBank.find( { name: req.params.name });
-  //console.log('LIST', list);
-  res.render('index', { title: 'Twitter.js', tweetsForName });
+  res.render('index', { title: 'Twitter.js', tweets: tweetsForName });
 });
 
 router.get('/users/:id/', function (req, res, next) {
